@@ -1,0 +1,42 @@
+Python3
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from pyzbar import pyzbar
+# Create a dictionary to map barcode data to product information
+products = {
+    "6009188002213": {"name": "KitKat", "price": "10", "expiry_date": "6 months"},
+    "987654321098": {"name": "Oreo", "price": "15", "expiry_date": "3 months"},
+    # Add more products here...
+}
+# Read the image
+image = cv2.imread('C:/ip_python/image.jpg')
+# Find barcodes in the image
+barcodes = pyzbar.decode(image)
+# Loop over each barcode found
+for barcode in barcodes:
+    # Extract the bounding box location of the barcode
+    (x, y, w, h) = barcode.rect
+    # Draw a rectangle around the barcode
+    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+   # Extract the barcode data
+    barcode_data = barcode.data.decode("utf-8")
+    barcode_type = barcode.type 
+   # Check if the barcode data is in the products dictionary
+    if barcode_data in products:
+        product_info = products[barcode_data]
+        print(f"Product Name: {product_info['name']}")
+        print(f"Product Price: {product_info['price']}")
+        print(f"Expiry Date: {product_info['expiry_date']}")
+    else:
+        print("Product not found in database")
+    # Print the barcode data and type
+    print(f"Barcode Data: {barcode_data}")
+    print(f"Barcode Type: {barcode_type}")
+   # Display the image with the barcode details
+    plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    plt.title(f"Barcode Data: {barcode_data}\nBarcode Type: {barcode_type}")
+    plt.show()
+
+
